@@ -1,0 +1,140 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "schema": "https://schema.org/",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "str": "https://www.sharethrough.com/vocab#",
+
+    "name": "schema:name",
+    "description": "schema:description",
+    "url": { "@id": "schema:url", "@type": "@id" },
+    "image": { "@id": "schema:image", "@type": "@id" },
+    "datePublished": { "@id": "schema:datePublished", "@type": "xsd:date" },
+    "dateModified": { "@id": "schema:dateModified", "@type": "xsd:date" },
+    "author": "schema:author",
+
+    "Organization": "schema:Organization",
+    "WebAPI": "schema:WebAPI",
+    "BlogPosting": "schema:BlogPosting",
+    "SoftwareApplication": "schema:SoftwareApplication",
+
+    "provider": { "@id": "schema:provider", "@type": "@id" },
+    "documentation": { "@id": "schema:documentation", "@type": "@id" },
+    "termsOfService": { "@id": "schema:termsOfService", "@type": "@id" },
+
+    "publisher": {
+      "@id": "str:publisher",
+      "@type": "@id",
+      "@context": {
+        "publisherKey": "str:publisherKey",
+        "placementKey": "str:placementKey",
+        "token": "str:token",
+        "reportType": "str:reportType",
+        "impressions": { "@id": "str:impressions", "@type": "xsd:integer" },
+        "revenue": { "@id": "str:revenue", "@type": "xsd:decimal" },
+        "dateRange": "str:dateRange",
+        "startDate": { "@id": "str:startDate", "@type": "xsd:date" },
+        "endDate": { "@id": "str:endDate", "@type": "xsd:date" }
+      }
+    },
+
+    "headerBidding": {
+      "@id": "str:headerBidding",
+      "@type": "@id",
+      "@context": {
+        "pkey": "str:pkey",
+        "bidderCode": "str:bidderCode",
+        "eqtvNetworkId": { "@id": "str:eqtvNetworkId", "@type": "xsd:integer" },
+        "ttl": { "@id": "str:ttl", "@type": "xsd:integer" },
+        "mediaTypes": "str:mediaTypes",
+        "native": "str:native",
+        "display": "str:display",
+        "video": "str:video",
+        "openRTB": "str:openRTB",
+        "bidEndpoint": { "@id": "str:bidEndpoint", "@type": "@id" }
+      }
+    },
+
+    "adExchange": {
+      "@id": "str:adExchange",
+      "@type": "@id",
+      "@context": {
+        "sspIntegration": "str:sspIntegration",
+        "dspIntegration": "str:dspIntegration",
+        "openRTBVersion": "str:openRTBVersion",
+        "safeframe": { "@id": "str:safeframe", "@type": "xsd:boolean" },
+        "scope3ClimateShield": { "@id": "str:scope3ClimateShield", "@type": "xsd:boolean" },
+        "gvlId": { "@id": "str:gvlId", "@type": "xsd:integer" }
+      }
+    },
+
+    "compliance": {
+      "@id": "str:compliance",
+      "@type": "@id",
+      "@context": {
+        "tcfEU": { "@id": "str:tcfEU", "@type": "xsd:boolean" },
+        "ccpa": { "@id": "str:ccpa", "@type": "xsd:boolean" },
+        "coppa": { "@id": "str:coppa", "@type": "xsd:boolean" },
+        "gpp": { "@id": "str:gpp", "@type": "xsd:boolean" },
+        "dsa": { "@id": "str:dsa", "@type": "xsd:boolean" }
+      }
+    },
+
+    "sustainability": {
+      "@id": "str:sustainability",
+      "@type": "@id",
+      "@context": {
+        "garmFramework": { "@id": "str:garmFramework", "@type": "xsd:boolean" },
+        "climateShield": { "@id": "str:climateShield", "@type": "xsd:boolean" },
+        "scope3Certified": { "@id": "str:scope3Certified", "@type": "xsd:boolean" },
+        "carbonFootprint": "str:carbonFootprint"
+      }
+    }
+  },
+
+  "@graph": [
+    {
+      "@id": "https://www.sharethrough.com",
+      "@type": "Organization",
+      "name": "Sharethrough",
+      "description": "Sharethrough is a human-centric programmatic advertising platform and one of the largest independent omnichannel ad exchanges, offering REST APIs for publishers and advertisers to manage native, display, and video ad placements through SSP/DSP integrations.",
+      "url": "https://www.sharethrough.com",
+      "documentation": "https://support.sharethrough.com/hc/en-us"
+    },
+    {
+      "@id": "https://api.sharethrough.com",
+      "@type": "WebAPI",
+      "name": "Sharethrough Publisher Reporting API",
+      "description": "REST API enabling publishers to pull programmatic and direct sell reporting data for their native ad placements.",
+      "provider": "https://www.sharethrough.com",
+      "documentation": "https://support.sharethrough.com/hc/en-us/articles/360044449471-Sharethrough-Publisher-API-Documentation",
+      "publisher": {
+        "reportType": ["programmatic", "direct_sell"],
+        "dateRange": "configurable"
+      }
+    },
+    {
+      "@id": "https://btlr.sharethrough.com",
+      "@type": "WebAPI",
+      "name": "Sharethrough Header Bidding (Prebid) API",
+      "description": "OpenRTB-based bidder adapter integration enabling SSP/DSP connections through the Prebid.js header bidding framework for native, display, and video ad formats.",
+      "provider": "https://www.sharethrough.com",
+      "documentation": "https://docs.prebid.org/dev-docs/bidders/sharethrough.html",
+      "headerBidding": {
+        "bidderCode": "sharethrough",
+        "mediaTypes": ["native", "display", "video"],
+        "openRTB": true
+      },
+      "adExchange": {
+        "gvlId": 80,
+        "safeframe": true,
+        "scope3ClimateShield": true
+      },
+      "compliance": {
+        "tcfEU": true,
+        "ccpa": true,
+        "coppa": true
+      }
+    }
+  ]
+}

@@ -1,0 +1,105 @@
+{
+  "meta": {
+    "source": "https://www.sharethrough.com/blog",
+    "fetched": "2026-06-13",
+    "provider": "sharethrough"
+  },
+  "posts": [
+    {
+      "title": "What to Expect at the Green Media Summit 2025: The Leading Event for Sustainability in Media",
+      "date": "2025-02-18",
+      "author": "Benoit Skinazi",
+      "url": "https://www.sharethrough.com/blog/what-to-expect-at-green-media-summit-2025-the-leading-event-for-sustainability-in-media",
+      "reading_time_minutes": 5,
+      "tags": ["sustainability", "media", "events"]
+    },
+    {
+      "title": "[Infographic] Sustainability in Focus: Advertiser and Consumer Trends for 2025",
+      "date": "2025-01-18",
+      "author": "Frank Maguire",
+      "url": "https://www.sharethrough.com/blog/infographic-sustainability-in-focus-advertiser-and-consumer-trends-for-2025",
+      "reading_time_minutes": 3,
+      "tags": ["sustainability", "advertising", "infographic", "trends"]
+    },
+    {
+      "title": "How Publishers Can Become More Efficient and Sustainable Without Reducing Revenue",
+      "date": "2024-10-04",
+      "author": "Andrew Simpson",
+      "url": "https://www.sharethrough.com/blog/how-publishers-can-become-more-efficient-and-sustainable-without-reducing-revenue",
+      "reading_time_minutes": 3,
+      "tags": ["publishers", "sustainability", "revenue", "efficiency"]
+    },
+    {
+      "title": "Customer Satisfaction, Brand Safety, and Sustainability Among Top Priorities For Advertisers",
+      "date": "2024-10-03",
+      "author": "Frank Maguire",
+      "url": "https://www.sharethrough.com/blog/customer-satisfaction-brand-safety-and-sustainability-among-top-priorities-for-advertisers",
+      "reading_time_minutes": 3,
+      "tags": ["brand-safety", "sustainability", "advertisers", "customer-satisfaction"]
+    },
+    {
+      "title": "Discover the New AI-Powered Features and Research Results of Sharethrough's Upgraded Headline Analyzer",
+      "date": "2024-08-21",
+      "author": "Frank Maguire",
+      "url": "https://www.sharethrough.com/blog/discover-the-new-ai-powered-features-and-research-results-of-sharethroughs-upgraded-headline-analyzer",
+      "reading_time_minutes": 3,
+      "tags": ["AI", "headline-analyzer", "features", "research"]
+    },
+    {
+      "title": "The Ultimate AI Glossary of 2024",
+      "date": "2024-08-15",
+      "author": "Matthew Workman",
+      "url": "https://www.sharethrough.com/blog/the-ultimate-ai-glossary-of-2024",
+      "reading_time_minutes": 14,
+      "tags": ["AI", "glossary", "definitions"]
+    },
+    {
+      "title": "TVision Study Reveals Sports Ticker Increases Attention of CTV Creatives",
+      "date": "2024-07-17",
+      "author": "Frank Maguire",
+      "url": "https://www.sharethrough.com/blog/tvision-study-reveals-sports-ticker-increases-attention-of-ctv-creatives",
+      "reading_time_minutes": 4,
+      "tags": ["CTV", "attention", "study", "sports", "creatives"]
+    },
+    {
+      "title": "Summarizing the New GARM Global Media Sustainability Framework: What Advertisers Need to Know",
+      "date": "2024-07-08",
+      "author": "Frank Maguire",
+      "url": "https://www.sharethrough.com/blog/summarizing-the-new-garm-global-media-sustainability-framework-what-advertisers-need-to-know",
+      "reading_time_minutes": 5,
+      "tags": ["GARM", "sustainability", "media-framework", "advertisers"]
+    },
+    {
+      "title": "Programmatic Advertising in a Cookieless World: Solutions & Strategies",
+      "date": "2024-07-03",
+      "author": "Matthew Workman",
+      "url": "https://www.sharethrough.com/blog/programmatic-advertising-in-a-cookieless-world-solutions-strategies",
+      "reading_time_minutes": 5,
+      "tags": ["programmatic", "cookieless", "privacy", "strategies"]
+    },
+    {
+      "title": "What You Need to Know: 4 Key Lessons from Cannes Lions",
+      "date": "2024-06-26",
+      "author": "Matthew Workman",
+      "url": "https://www.sharethrough.com/blog/what-you-need-to-know-4-key-lessons-from-cannes-lions",
+      "reading_time_minutes": 5,
+      "tags": ["Cannes Lions", "advertising", "industry", "insights"]
+    },
+    {
+      "title": "Sharethrough & Equativ Merge to Create One of The Largest Independent Ad Platforms in The World",
+      "date": "2024-06-12",
+      "author": "JF Cote",
+      "url": "https://www.sharethrough.com/blog/sharethrough-and-equativ-are-merging",
+      "reading_time_minutes": 3,
+      "tags": ["merger", "Equativ", "ad-platform", "announcement"]
+    },
+    {
+      "title": "5 More Use Cases for Advertising AI",
+      "date": "2024-05-29",
+      "author": "Matthew Workman",
+      "url": "https://www.sharethrough.com/blog/5-more-use-cases-for-advertising-ai",
+      "reading_time_minutes": 3,
+      "tags": ["AI", "advertising", "use-cases"]
+    }
+  ]
+}
