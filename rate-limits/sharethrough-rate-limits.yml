@@ -1,0 +1,34 @@
+name: Sharethrough Rate Limits
+description: Sharethrough does not publicly document specific rate limits for its Publisher Reporting API or OpenRTB bidding endpoints. Rate limits are enforced at the platform level and communicated through account management. The following reflects known or inferred constraints based on public documentation and integration guides.
+url: https://support.sharethrough.com/hc/en-us/articles/360044449471-Sharethrough-Publisher-API-Documentation
+created: '2026-06-13'
+modified: '2026-06-13'
+rateLimits:
+  - name: Publisher Reporting API
+    description: The Publisher API for Reporting is used to pull programmatic and direct sell performance data. No explicit rate limits are publicly documented; typical usage involves scheduled batch reporting pulls rather than high-frequency real-time calls.
+    endpoint: https://api.sharethrough.com
+    authentication: Bearer Token (AUTH_TOKEN)
+    outputFormats:
+      - CSV
+      - JSON
+    reportTypes:
+      - Programmatic
+      - Direct Sell
+    limits:
+      note: Not publicly documented. Contact Sharethrough support or account manager for specific rate limit thresholds.
+  - name: Header Bidding / OpenRTB Bidding Endpoint
+    description: Real-time bidding requests through the Prebid.js adapter are processed with standard RTB timing constraints. Bid responses must be returned within the auction timeout window configured by the publisher.
+    endpoint: https://btlr.sharethrough.com
+    ttl:
+      display: 360 seconds
+      native: 360 seconds
+      video: 3600 seconds
+    bidResponseFormat: Net revenue (revenue sharing already deducted)
+    safeframesSupported: true
+    limits:
+      note: RTB-standard auction timeouts apply. High-volume exchange traffic is handled at the platform level; specific rate limits are not published.
+notes:
+  - Rate limits for the Publisher Reporting API are not publicly disclosed and must be obtained from Sharethrough directly.
+  - OpenRTB bid endpoint performance follows standard programmatic exchange constraints (millisecond-level bid timeout windows).
+  - For integration-specific rate limits, contact the Sharethrough Integrations team via your account manager.
+  - Documentation reference: https://support.sharethrough.com/hc/en-us/articles/360044449471-Sharethrough-Publisher-API-Documentation

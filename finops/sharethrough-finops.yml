@@ -1,0 +1,42 @@
+name: Sharethrough FinOps
+description: Financial operations guidance for managing costs associated with Sharethrough's programmatic advertising APIs and exchange platform. Sharethrough operates on a revenue-share model for publishers and CPM-based buying for advertisers, with no fixed API subscription fees.
+url: https://www.sharethrough.com
+created: '2026-06-13'
+modified: '2026-06-13'
+costModel:
+  type: Revenue Share / CPM
+  description: Sharethrough does not charge fixed API fees. Publisher revenue is derived from a share of programmatic auction revenue. Advertiser costs are CPM-based and negotiated through DSP integrations or direct contracts.
+  pricingTransparency: Low — no public rate card; all pricing negotiated via account management
+costDrivers:
+  - name: Ad Impression Volume
+    description: The primary cost driver for advertisers is CPM (cost per thousand impressions). Higher impression volumes scale costs proportionally.
+    unit: CPM
+  - name: Publisher Revenue Share
+    description: Publishers receive a percentage of gross auction revenue. The exact revenue share percentage is negotiated and not publicly disclosed.
+    unit: Percentage of gross revenue
+  - name: Integration and Setup
+    description: Initial integration with the Sharethrough Integrations team (for Prebid/header bidding) may require dedicated engineering time. No documented setup fees.
+    unit: Engineering hours (internal)
+  - name: Sustainability Overhead
+    description: Sharethrough is Scope3 Climate Shield certified and an Ad Net Zero member. Sustainability-focused ad buying may carry a slight premium to fund carbon offset initiatives.
+    unit: Included in platform fees
+costOptimization:
+  - strategy: Use First-Party Data Targeting
+    description: Leverage ortb2 first-party data fields (bcat, badv, site, user) to improve targeting precision and reduce wasted impressions, lowering effective CPM by improving relevance.
+  - strategy: Monitor Publisher Reporting API
+    description: Regularly pull programmatic and direct sell reports via the Publisher API to identify underperforming placements and optimize fill rates and revenue.
+  - strategy: Evaluate Placement Key (pkey) Performance
+    description: Review performance by placement key to identify high-value inventory versus low-yield placements and adjust header bidding floor prices accordingly.
+  - strategy: Carbon Emissions Monitoring
+    description: Use Sharethrough's Carbon Emissions Estimator to monitor and reduce the carbon footprint of ad campaigns, aligning spend with sustainability goals and potential regulatory requirements.
+    url: https://www.sharethrough.com/carbon-emissions-estimator
+  - strategy: Negotiate Revenue Share Terms
+    description: For high-volume publishers, negotiate improved revenue share terms directly with a Sharethrough account manager. Volume commitments may improve yield.
+billing:
+  model: Net revenue disbursement for publishers; invoice-based for advertisers
+  cycle: Typically monthly, negotiated per contract
+  contact: https://www.sharethrough.com/contact
+notes:
+  - Sharethrough merged with Equativ; some billing and account management may operate under the combined Equativ/Sharethrough entity.
+  - No free trial or self-serve tier is available; all accounts require direct engagement with the Sharethrough team.
+  - API access (Publisher Reporting API) is tied to existing publisher accounts and does not incur separate fees.
