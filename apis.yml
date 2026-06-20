@@ -1,6 +1,6 @@
 name: Sharethrough
 description: Sharethrough is a human-centric programmatic advertising platform and one of the largest independent omnichannel ad exchanges, offering REST APIs for publishers and advertisers to manage native, display, and video ad placements through SSP/DSP integrations, real-time bidding via OpenRTB, programmatic reporting, and sustainability-focused media buying with Scope3 Climate Shield certification.
-image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
 url: https://raw.githubusercontent.com/api-evangelist/sharethrough/refs/heads/main/apis.yml
 created: '2026-06-13'
 modified: '2026-06-13'
@@ -17,7 +17,7 @@ tags:
 apis:
   - name: Sharethrough Publisher Reporting API
     description: REST API enabling publishers to pull programmatic and direct sell reporting data for their native ad placements, including impressions, revenue, and performance metrics, using token-based authentication.
-    image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+    image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
     humanURL: https://support.sharethrough.com/hc/en-us/sections/360009157451-Publisher-API-for-Reporting
     baseURL: https://api.sharethrough.com
     tags:
@@ -31,7 +31,7 @@ apis:
         url: https://github.com/sharethrough/publisher-api-examples
   - name: Sharethrough Header Bidding (Prebid) API
     description: OpenRTB-based bidder adapter integration enabling SSP/DSP connections through the Prebid.js header bidding framework for native, display, and video ad formats with support for placement keys and first-party data targeting.
-    image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+    image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
     humanURL: https://docs.prebid.org/dev-docs/bidders/sharethrough.html
     baseURL: https://btlr.sharethrough.com
     tags:
