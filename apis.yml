@@ -47,6 +47,8 @@ apis:
       - type: GitHubRepository
         url: https://github.com/sharethrough/Prebid.js-inventory-growth
 common:
+  - type: DomainSecurity
+    url: security/sharethrough-domain-security.yml
   - type: Website
     url: https://www.sharethrough.com
   - type: Documentation
