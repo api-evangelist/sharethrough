@@ -1,6 +1,18 @@
 name: Sharethrough
 description: Sharethrough is a human-centric programmatic advertising platform and one of the largest independent omnichannel ad exchanges, offering REST APIs for publishers and advertisers to manage native, display, and video ad placements through SSP/DSP integrations, real-time bidding via OpenRTB, programmatic reporting, and sustainability-focused media buying with Scope3 Climate Shield certification.
-image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+accessModel:
+  pricing: unknown
+  onboarding: unknown
+  trial: false
+  try_now: false
+  public: false
+  label: Unknown
+  confidence: low
+  source:
+  - plans
+  generated: '2026-07-22'
+  method: derived
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/sharethrough.png
 url: https://raw.githubusercontent.com/api-evangelist/sharethrough/refs/heads/main/apis.yml
 created: '2026-06-13'
 modified: '2026-06-13'
