@@ -1,0 +1,156 @@
+name: Sharethrough API Lifecycle
+description: >-
+  Versioning, deprecation, availability and support posture for the Sharethrough API surfaces.
+  This artifact records an unusually clear decay picture: the reporting API's v1 is dead, its
+  public reference has been withdrawn behind a sign-in wall, its published base host no longer
+  resolves, its status page has been inactive since 2022, and the company itself now operates
+  under the Equativ brand. Everything below is a probe result, not an inference.
+generated: '2026-08-12'
+method: probed
+source: live probes 2026-08-12 + provider press releases
+versioning:
+  scheme: URI path prefix (/v1, /v2)
+  current: v2
+  current_base: https://publisher-api.sharethrough.com/v2
+  version_header: none
+  date_pinning: none
+  negotiation: none
+versions:
+  - version: v1
+    base: https://publisher-api.sharethrough.com/v1
+    status: retired
+    observed_status_code: 503
+    observed_body: 'Service Unavailable (text/plain)'
+    evidence: >-
+      GET and POST against /v1, /v1/programmatic and /v1/direct-sell all return a plain-text
+      503. This is the base URL hard-coded in Sharethrough's own published example client
+      (setup.py, PUB_API_URL = 'https://publisher-api.sharethrough.com/v1'), which therefore
+      no longer works as shipped.
+    sunset_header: false
+    deprecation_header: false
+    announcement: none found
+  - version: v2
+    base: https://publisher-api.sharethrough.com/v2
+    status: live
+    operations_reachable:
+      - 'POST /v2/programmatic — 401 without a bearer token'
+      - 'GET /v2/health — 200, empty body'
+    note: >-
+      The direct-sell report type that v1 offered is not routed under /v2 at any spelling
+      tried (direct-sell, direct_sell, directsell all return 404). Whether it was dropped or
+      moved is not publicly stated.
+deprecation_policy:
+  published: false
+  rfc8594_sunset_header: false
+  rfc8594_deprecation_header: false
+  notice_period: not published
+  detail: >-
+    Sharethrough publishes no deprecation policy and emits no Sunset or Deprecation header.
+    The v1 retirement was executed without a public announcement we could find, and the
+    retired routes answer 503 rather than 410 Gone — which signals "try again later" to every
+    conforming client instead of "this is permanently gone".
+  no_pointer_reason: >-
+    No Deprecation pointer is emitted, because a policy the provider has not published must
+    not be credited to it. The observed v1 retirement is recorded as evidence, not as a policy.
+status_page:
+  url: https://status.sharethrough.com
+  http_status: 200
+  active: false
+  provider: Atlassian Statuspage
+  evidence:
+    - >-
+      https://status.sharethrough.com/api/v2/status.json, /summary.json and /components.json
+      all return 401 "Your page is inactive. Please include an API key to access this resource."
+    - >-
+      https://status.sharethrough.com/history.rss returns a feed titled
+      "Sharethrough - Inactive Incident Feed" whose description reads "This feed is currently
+      inactive or private", with a pubDate of 2022-06-25.
+  no_pointer_reason: >-
+    No StatusPage pointer is emitted. The hostname resolves and the page answers 200, but
+    Statuspage itself reports the page as inactive and has published no incident since 2022.
+    Wiring the pointer would credit Sharethrough with an operational transparency surface it
+    does not operate.
+sla:
+  published: false
+  uptime_commitment: not published
+  support_tiers: not published
+  note: >-
+    Terms are carried in the Publisher Platform Terms of Service and the Managed Services
+    Terms of Service; neither is an API SLA.
+changelog:
+  published: false
+  searched:
+    - support.sharethrough.com help center (Advertisers category only; no release notes section)
+    - www.sharethrough.com sitemap (627 URLs; no changelog, release-notes or updates page)
+  note: >-
+    The only dated version signal for any Sharethrough surface is the Prebid.js bidder
+    adapter, whose VERSION constant reads 4.3.0 — but that file is versioned in the Prebid.js
+    repository under Prebid's release process, not Sharethrough's, so it is not recorded as a
+    Sharethrough changelog.
+documentation_availability:
+  reference_url: https://support.sharethrough.com/hc/en-us/articles/360044449471-Sharethrough-Publisher-API-Documentation
+  reference_status: 404
+  section_url: https://support.sharethrough.com/hc/en-us/sections/360009157451-Publisher-API-for-Reporting
+  section_api_status: 401
+  section_article_count: 0
+  evidence:
+    - >-
+      GET /api/v2/help_center/en-us/articles/360044449471.json returns
+      {"error":"RecordNotFound","description":"Not found"}
+    - >-
+      GET /api/v2/help_center/en-us/sections/360009157451.json returns
+      {"error":"Couldn't authenticate you"} (401) — the section is restricted to signed-in users
+    - >-
+      GET /api/v2/help_center/en-us/sections/360009157451/articles.json returns count 0 anonymously
+    - >-
+      The help centre now exposes a single public category, Advertisers, containing DSP
+      integration guides. The Publishers category (200065029) returns 404 anonymously.
+  interpretation: >-
+    The Publisher Reporting API is still running, but its written reference has been withdrawn
+    from public view. An integrator can reach the endpoint and get a 401; they cannot read
+    what to send it.
+host_decay:
+  - host: api.sharethrough.com
+    dns: NXDOMAIN
+    note: >-
+      This was the baseURL carried in apis.yml before this pass. It does not resolve. The live
+      reporting host is publisher-api.sharethrough.com, named in Sharethrough's own example client.
+  - host: publisher-api.sharethrough.com
+    dns: resolves (3 A records)
+    note: /v2/* routed; everything else 503.
+  - host: btlr.sharethrough.com
+    dns: 'CNAME btlr-us-east-1.sharethrough.com'
+    note: 'Live; POST /universal/v1?supply_id=... returns 400 on a malformed body.'
+  - host: iab.sharethrough.com
+    dns: resolves (CloudFront)
+    note: Serves sellers.json only.
+  - host: nag.sharethrough.com
+    note: '302s to https://sharethrough-users.auth0.com/u/login — the publisher platform login.'
+  - host: developers.sharethrough.com
+    dns: 'CNAME sharethrough.github.io'
+    http_status: 404
+    note: >-
+      A developer-portal hostname is still delegated to GitHub Pages, but no site is published
+      there ("Site not found - GitHub Pages"). A dangling CNAME to an unclaimed Pages target.
+corporate:
+  parent: Equativ
+  events:
+    - date: '2024-06-12'
+      event: Equativ and Sharethrough announce merger
+      source: https://www.sharethrough.com/company/press/sharethrough-and-equativ-are-merging
+    - date: '2025-06'
+      event: >-
+        Integration completed; the combined company operates under the Equativ brand.
+        sharethrough.com now links to equativ.com and to the "will now operate under Equativ
+        brand" press release from its homepage.
+      source: https://equativ.com/press/equativ-and-sharethrough-will-now-operate-under-equativ-brand-solidifying-global-position-as-leading-end-to-end-media-platform
+  note: >-
+    Equativ publishes its own Maestro Reporting API at help.equativ.com. That is a different
+    product on a different domain under a different brand and is NOT recorded here or
+    attributed to Sharethrough; if it is profiled it belongs in its own repo.
+notes:
+  - >-
+    The Sharethrough exchange itself is plainly still operating — sellers.json lists 5,189
+    active sellers and the bidding endpoint answers — so this is not a dead company. It is a
+    live exchange whose developer-facing surface has been allowed to decay while the brand
+    consolidates into Equativ.

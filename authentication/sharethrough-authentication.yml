@@ -1,0 +1,130 @@
+name: Sharethrough Authentication
+description: >-
+  Authentication profile for the two Sharethrough API surfaces. The Publisher Reporting API
+  is an OAuth 2.0 bearer-token API: every request carries an Authorization: Bearer header and
+  an anonymous request is rejected with a 401. Tokens are issued out of the company's own
+  Auth0 tenant, whose OpenID Provider Metadata is public. The header-bidding endpoint is
+  unauthenticated and identified by a supply_id query parameter plus a per-publisher
+  placement key.
+generated: '2026-08-12'
+method: probed
+source: >-
+  live probes of https://publisher-api.sharethrough.com/v2/programmatic and
+  https://sharethrough-users.auth0.com/.well-known/openid-configuration, plus Sharethrough's
+  own first-party example client at https://github.com/strchives/publisher-api-examples
+docs: https://support.sharethrough.com/hc/en-us/sections/360009157451-Publisher-API-for-Reporting
+docs_status: >-
+  401 anonymously — the Publisher API for Reporting section of the support site now requires
+  a signed-in Zendesk user, so the written auth reference is not publicly readable.
+schemes:
+  - id: publisher_api_bearer
+    api: Sharethrough Publisher Reporting API
+    type: http
+    scheme: bearer
+    in: header
+    header: Authorization
+    format: 'Authorization: Bearer <AUTH_TOKEN>'
+    required: true
+    evidence:
+      - >-
+        POST https://publisher-api.sharethrough.com/v2/programmatic with no Authorization
+        header returns HTTP 401 {"message":"Unauthorized","statusCode":401}
+      - >-
+        POST with an invalid bearer token returns the identical 401 body — no distinct
+        invalid_token/expired_token signal is exposed to the caller
+      - >-
+        libs/auth.py in Sharethrough's own publisher-api-examples repo implements a
+        requests.auth.AuthBase that sets r.headers["authorization"] = "Bearer " + token
+      - >-
+        setup.py in the same repo defines AUTH_TOKEN as the single credential the client needs
+    token_acquisition: >-
+      Not publicly documented. The token is issued to a publisher account; the support article
+      that described how to obtain it (360044449471) now returns 404 to anonymous callers.
+    rotation: unknown
+    scopes: none documented
+  - id: bidding_supply_id
+    api: Sharethrough Header Bidding (Prebid) API
+    type: none
+    in: query
+    parameter: supply_id
+    required: true
+    value_observed: WYu2BXv1
+    format: 'https://btlr.sharethrough.com/universal/v1?supply_id=<supply_id>'
+    evidence:
+      - >-
+        STR_ENDPOINT in modules/sharethroughBidAdapter.js (Prebid.js, adapter VERSION 4.3.0)
+        is https://btlr.sharethrough.com/universal/v1?supply_id=WYu2BXv1
+      - >-
+        An anonymous POST of a malformed OpenRTB body to that URL returns HTTP 400 with an
+        empty body — the endpoint accepts unauthenticated requests and validates the payload
+    note: >-
+      This is bid-request identification, not authentication. Per-publisher authorization is
+      carried by the required params.pkey placement key inside the bid request, which
+      Sharethrough issues after the Integrations team approves the publisher.
+identity_provider:
+  vendor: Auth0
+  tenant: sharethrough-users.auth0.com
+  issuer: https://sharethrough-users.auth0.com/
+  discovery: well-known/sharethrough-openid-configuration.json
+  discovered_via: 'http://nag.sharethrough.com 302 -> https://sharethrough-users.auth0.com/u/login'
+  authorization_endpoint: https://sharethrough-users.auth0.com/authorize
+  token_endpoint: https://sharethrough-users.auth0.com/oauth/token
+  revocation_endpoint: https://sharethrough-users.auth0.com/oauth/revoke
+  jwks_uri: https://sharethrough-users.auth0.com/.well-known/jwks.json
+  device_authorization_endpoint: https://sharethrough-users.auth0.com/oauth/device/code
+  id_token_signing: RS256
+  pkce: 'S256 and plain both advertised'
+  grant_types_supported:
+    - client_credentials
+    - authorization_code
+    - refresh_token
+    - password
+    - implicit
+    - 'urn:ietf:params:oauth:grant-type:device_code'
+    - 'urn:ietf:params:oauth:grant-type:token-exchange'
+    - 'urn:ietf:params:oauth:grant-type:jwt-bearer'
+  token_endpoint_auth_methods_supported:
+    - client_secret_basic
+    - client_secret_post
+    - private_key_jwt
+    - none
+  scopes_supported:
+    - openid
+    - profile
+    - offline_access
+    - name
+    - given_name
+    - family_name
+    - nickname
+    - email
+    - email_verified
+    - picture
+    - created_at
+    - identities
+    - phone
+    - address
+  scopes_note: >-
+    These are the stock OpenID Connect / Auth0 profile scopes the tenant advertises. They are
+    NOT an authorization model for the Publisher Reporting API — Sharethrough documents no
+    API scopes or permissions anywhere public, which is why no scopes/ artifact and no
+    OAuthScopes pointer are emitted for this provider.
+  caveats:
+    - >-
+      The tenant advertises the legacy implicit and resource-owner-password grants alongside
+      authorization_code + PKCE. Both are discouraged by OAuth 2.1 / BCP 240.
+transport:
+  tls_required: true
+  observed_tls: TLSv1.3
+  hsts_on_bidding_host: 'max-age=16000000; includeSubDomains; preload'
+  hsts_on_reporting_host: not sent on the /v2 JSON responses observed
+  cors: 'access-control-allow-origin: * on every publisher-api.sharethrough.com response observed'
+mtls: none
+api_keys: none
+basic_auth: none
+notes:
+  - >-
+    There is no published OpenAPI for either surface, so this profile is built from live
+    probes and from Sharethrough's own example client rather than derived from securitySchemes.
+  - >-
+    A caller cannot distinguish "no token", "bad token" and "expired token": all three
+    produce the same opaque 401 body with no WWW-Authenticate header.

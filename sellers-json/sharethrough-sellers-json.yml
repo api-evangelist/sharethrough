@@ -1,0 +1,70 @@
+name: Sharethrough sellers.json
+description: >-
+  Sharethrough publishes an IAB Tech Lab sellers.json 1.0 document — the supply-chain
+  transparency manifest every OpenRTB exchange is expected to serve. It is the largest
+  machine-readable artifact Sharethrough publishes: 5,189 seller records naming every
+  publisher and intermediary that can be transacted through the exchange. Saved verbatim.
+generated: '2026-08-12'
+method: searched
+source: https://www.sharethrough.com/sellers.json
+specification:
+  name: sellers.json
+  version: '1.0'
+  body: IAB Tech Lab
+  spec_url: https://iabtechlab.com/sellers-json/
+file: sharethrough-sellers.json
+discovery:
+  requested: https://www.sharethrough.com/sellers.json
+  http_status: 200
+  redirect_to: https://iab.sharethrough.com/sellers.json
+  final_status: 200
+  content_type: application/json
+  bytes: 815843
+  fetched: '2026-08-12'
+  note: >-
+    Both www.sharethrough.com/sellers.json and the bare sharethrough.com/sellers.json answer
+    200; the request 301s to a dedicated S3/CloudFront origin at iab.sharethrough.com which
+    serves this one object and returns AccessDenied for every other key.
+ownership:
+  verdict: first-party
+  evidence:
+    - 'contact_email: dsps@sharethrough.com'
+    - 'contact_address: Sharethrough Inc, 5455 Gaspe Ave #730, Montreal, Quebec, H2T 3B3, Canada'
+    - 'identifiers[0]: TAG-ID d53b998a7bd4ecd2'
+    - served from sharethrough.com and iab.sharethrough.com
+document:
+  version: '1.0'
+  contact_email: dsps@sharethrough.com
+  contact_address: 'Sharethrough Inc, 5455 Gaspe Ave #730, Montreal, Quebec, H2T 3B3, Canada'
+  identifiers:
+    - name: TAG-ID
+      value: d53b998a7bd4ecd2
+  seller_count: 5189
+  seller_types:
+    PUBLISHER: 2760
+    INTERMEDIARY: 2143
+    BOTH: 286
+  confidential:
+    declared_not_confidential: 2687
+    field_absent: 2502
+  record_fields:
+    - seller_id
+    - name
+    - domain
+    - seller_type
+    - is_confidential
+related:
+  ads_txt: none
+  app_ads_txt: none
+  note: >-
+    Sharethrough is an exchange, not a publisher, so it serves sellers.json but no ads.txt /
+    app-ads.txt of its own; both paths 404 on www.sharethrough.com and 403 on iab.sharethrough.com.
+notes:
+  - >-
+    sellers.json is the only always-on, unauthenticated, machine-readable contract
+    Sharethrough publishes. The reporting API requires a bearer token and its reference is
+    behind a support-site sign-in; the bidding endpoint speaks OpenRTB but publishes no
+    schema of its own.
+  - >-
+    The is_confidential field is present on 2,687 of 5,189 records and always set to 0; the
+    remaining 2,502 records omit it, which the spec treats as equivalent to 0.

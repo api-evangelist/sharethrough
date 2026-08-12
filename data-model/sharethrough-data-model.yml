@@ -1,0 +1,239 @@
+name: Sharethrough Data Model
+description: >-
+  Entity model for the two Sharethrough surfaces, derived from artifacts that actually exist:
+  the report request/response shapes in Sharethrough's own published example client, the
+  OpenRTB objects the Prebid bidder adapter constructs, and the seller records in the
+  published sellers.json. There is no OpenAPI to derive $ref relationships from, so this is a
+  reconstruction from real payloads rather than a schema graph — every field named below
+  appears in a document Sharethrough or its adapter actually emits.
+generated: '2026-08-12'
+method: derived
+source: >-
+  https://github.com/strchives/publisher-api-examples (run_programmatic.py, run_direct_sell.py,
+  libs/publisher_api.py); sellers-json/sharethrough-sellers.json;
+  conformance/sharethrough-device-storage-disclosure.json;
+  prebid/Prebid.js modules/sharethroughBidAdapter.js
+completeness: partial
+completeness_note: >-
+  The full dimension and metric vocabulary is only published in the gated support docs. There
+  is no discovery endpoint — GET /v2/fields and /v2/dimensions both return 404 — so the lists
+  below are the fields observed in real requests, not the complete set.
+entities:
+  - name: ReportRequest
+    surface: reporting
+    description: The query object POSTed to /v2/programmatic. The only request body the API takes.
+    fields:
+      - name: startDate
+        type: string
+        format: date
+        required: true
+      - name: endDate
+        type: string
+        format: date
+        required: true
+      - name: groupBy
+        type: array<string>
+        required: true
+        description: Dimension names the result rows are grouped by.
+      - name: fields
+        type: array<string>
+        required: true
+        description: Metric names returned on each row.
+      - name: filterBy
+        type: array<Filter>
+        required: false
+      - name: debug
+        type: boolean
+        required: false
+  - name: Filter
+    surface: reporting
+    description: A single predicate inside ReportRequest.filterBy.
+    fields:
+      - name: operator
+        type: string
+        observed_values:
+          - EQUALS
+      - name: field
+        type: string
+        description: A dimension name.
+      - name: value
+        type: string
+  - name: ReportResult
+    surface: reporting
+    description: >-
+      The JSON response body. An object carrying results[], where each row is a flat map of
+      the requested groupBy dimensions to their values plus the requested fields to their
+      metric values. The same query returns CSV when Accept: text/csv is sent.
+    fields:
+      - name: results
+        type: array<ReportRow>
+  - name: ReportRow
+    surface: reporting
+    description: One grouped row. Keys are exactly the union of the request's groupBy and fields.
+    dimensions_observed:
+      - name: date
+      - name: supply_name
+      - name: placement_name
+      - name: domain
+      - name: creative_type
+        observed_values:
+          - clickout
+      - name: device_type
+        observed_values:
+          - Smartphone
+          - Tablet
+      - name: country
+        format: ISO 3166-1 alpha-2
+    metrics_observed:
+      - name: rendered_impressions
+      - name: impression_requests
+      - name: pub_earnings
+        note: Publisher earnings, net of revenue share.
+      - name: clicks
+      - name: ctr
+  - name: Seller
+    surface: supply-chain
+    description: One record in the published sellers.json. 5,189 present.
+    source_file: sellers-json/sharethrough-sellers.json
+    fields:
+      - name: seller_id
+        type: string
+        required: true
+        description: >-
+          Two shapes coexist — an 8-character opaque token (e.g. e3dwbEkM, YYdbGTQl) and a
+          numeric account id (e.g. 30888568).
+      - name: name
+        type: string
+        required: true
+      - name: domain
+        type: string
+        required: true
+      - name: seller_type
+        type: string
+        required: true
+        enum:
+          - PUBLISHER
+          - INTERMEDIARY
+          - BOTH
+      - name: is_confidential
+        type: integer
+        required: false
+        present_on: 2687 of 5189 records, always 0
+  - name: SellersDocument
+    surface: supply-chain
+    description: The sellers.json envelope.
+    fields:
+      - name: version
+        value: '1.0'
+      - name: contact_email
+        value: dsps@sharethrough.com
+      - name: contact_address
+      - name: identifiers
+        type: array<{name, value}>
+        observed: 'TAG-ID d53b998a7bd4ecd2'
+      - name: sellers
+        type: array<Seller>
+  - name: BidRequest
+    surface: bidding
+    description: >-
+      The OpenRTB 2.x request the Prebid adapter posts to
+      https://btlr.sharethrough.com/universal/v1. Standard OpenRTB objects; Sharethrough
+      publishes no schema of its own.
+    fields:
+      - name: id
+      - name: at
+      - name: cur
+      - name: tmax
+      - name: site
+      - name: device
+      - name: imp
+      - name: user
+      - name: regs
+      - name: source
+      - name: badv
+      - name: bcat
+  - name: BidParams
+    surface: bidding
+    description: The Sharethrough-specific params block a publisher sets on a Prebid ad unit.
+    fields:
+      - name: pkey
+        type: string
+        required: true
+        description: The placement key Sharethrough issues per publisher placement.
+      - name: eqtvNetworkId
+        type: integer
+        required: false
+        description: Routes the request to the Equativ exchange instead of the Sharethrough endpoint.
+      - name: bcat
+        type: array<string>
+        required: false
+        deprecated: true
+        superseded_by: ortb2.bcat
+      - name: badv
+        type: array<string>
+        required: false
+        deprecated: true
+        superseded_by: ortb2.badv
+  - name: StorageDisclosure
+    surface: privacy
+    description: >-
+      The IAB TCF device-storage disclosure published at assets.sharethrough.com/gvl.json.
+    source_file: conformance/sharethrough-device-storage-disclosure.json
+    fields:
+      - name: disclosures
+        type: array<{identifier, type, maxAgeSeconds, cookieRefresh, domains, purposes}>
+        observed: 'stx_user_id, cookie, 2592000s, purposes 1/2/7, *.sharethrough.com'
+      - name: domains
+        type: array<{domain, use}>
+        observed:
+          - 'match.sharethrough.com — User matching'
+          - 'btlr.sharethrough.com — Ad serving'
+          - 'native.sharethrough.com — Display ad rendering'
+          - '*.rendering.sharethrough.com — Display ad rendering'
+      - name: sdks
+        type: array
+        observed: empty
+relationships:
+  - from: ReportRequest
+    to: Filter
+    type: has_many
+    via: filterBy
+  - from: ReportResult
+    to: ReportRow
+    type: has_many
+    via: results
+  - from: ReportRow
+    to: ReportRequest
+    type: belongs_to
+    via: 'keys are the union of groupBy + fields'
+  - from: SellersDocument
+    to: Seller
+    type: has_many
+    via: sellers
+  - from: BidRequest
+    to: BidParams
+    type: has_one
+    via: 'imp[].ext / params.pkey on the ad unit'
+  - from: ReportRow
+    to: Seller
+    type: references
+    via: 'supply_name / domain correspond to the seller name and domain in sellers.json'
+    confidence: medium
+    note: >-
+      Field-name correspondence, not a documented join. Recorded as medium confidence because
+      no key relationship is published.
+id_conventions:
+  - entity: Seller
+    field: seller_id
+    shape: 8-character opaque token or numeric account id
+  - entity: BidParams
+    field: pkey
+    shape: opaque placement key issued by Sharethrough
+  - entity: BidRequest
+    field: supply_id
+    shape: 'opaque supply identifier carried in the endpoint query string (observed: WYu2BXv1)'
+notes:
+  - >-
+    There is no object reference to search — the support article that documented the report
+    fields returns 404 anonymously and the section requires a Zendesk sign-in — so this model
+    could not be upgraded from derived to searched.

@@ -1,0 +1,136 @@
+name: Sharethrough Well-Known Discovery Probe
+description: >-
+  Record of every RFC 8615 /.well-known/ path probed across the Sharethrough hosts named in
+  apis.yml plus the identity host the publisher platform login redirects to. Sharethrough's
+  own web, exchange and reporting hosts serve nothing at /.well-known/. The one real hit is
+  the OpenID Connect / OAuth 2.0 Authorization Server Metadata published by the company's
+  own Auth0 tenant (sharethrough-users.auth0.com), which is reached by following the
+  publisher-platform login at nag.sharethrough.com.
+generated: '2026-08-12'
+method: probed
+source: live HTTPS probes, 2026-08-12
+hosts_probed:
+  - www.sharethrough.com
+  - support.sharethrough.com
+  - api.sharethrough.com
+  - publisher-api.sharethrough.com
+  - btlr.sharethrough.com
+  - iab.sharethrough.com
+  - sharethrough-users.auth0.com
+probes:
+  - host: www.sharethrough.com
+    path: /.well-known/security.txt
+    status: 404
+    note: Webflow site answers every /.well-known/* path with an HTML "Invalid .well-known request" page.
+  - host: www.sharethrough.com
+    path: /.well-known/openid-configuration
+    status: 404
+  - host: www.sharethrough.com
+    path: /.well-known/oauth-authorization-server
+    status: 404
+  - host: www.sharethrough.com
+    path: /.well-known/api-catalog
+    status: 404
+  - host: www.sharethrough.com
+    path: /.well-known/ai-plugin.json
+    status: 404
+  - host: support.sharethrough.com
+    path: /.well-known/security.txt
+    status: 404
+  - host: support.sharethrough.com
+    path: /.well-known/openid-configuration
+    status: 404
+  - host: support.sharethrough.com
+    path: /.well-known/oauth-authorization-server
+    status: 404
+  - host: support.sharethrough.com
+    path: /.well-known/api-catalog
+    status: 404
+  - host: support.sharethrough.com
+    path: /.well-known/ai-plugin.json
+    status: 404
+  - host: api.sharethrough.com
+    path: /.well-known/security.txt
+    status: 0
+    note: >-
+      api.sharethrough.com does not resolve (NXDOMAIN). This is the baseURL apis.yml carried
+      before this pass; the live reporting host is publisher-api.sharethrough.com.
+  - host: publisher-api.sharethrough.com
+    path: /.well-known/security.txt
+    status: 503
+    note: The edge returns a plain-text 503 for every path outside the /v2/* route prefix.
+  - host: publisher-api.sharethrough.com
+    path: /.well-known/oauth-authorization-server
+    status: 503
+  - host: publisher-api.sharethrough.com
+    path: /.well-known/openid-configuration
+    status: 503
+  - host: publisher-api.sharethrough.com
+    path: /.well-known/api-catalog
+    status: 503
+  - host: publisher-api.sharethrough.com
+    path: /.well-known/ai-plugin.json
+    status: 503
+  - host: btlr.sharethrough.com
+    path: /.well-known/security.txt
+    status: 404
+  - host: btlr.sharethrough.com
+    path: /.well-known/openid-configuration
+    status: 404
+  - host: btlr.sharethrough.com
+    path: /.well-known/oauth-authorization-server
+    status: 404
+  - host: btlr.sharethrough.com
+    path: /.well-known/api-catalog
+    status: 404
+  - host: btlr.sharethrough.com
+    path: /.well-known/ai-plugin.json
+    status: 404
+  - host: iab.sharethrough.com
+    path: /.well-known/security.txt
+    status: 403
+    note: S3/CloudFront origin that serves only /sellers.json; every other key returns an AccessDenied XML body.
+  - host: iab.sharethrough.com
+    path: /.well-known/api-catalog
+    status: 403
+  - host: sharethrough-users.auth0.com
+    path: /.well-known/openid-configuration
+    status: 200
+    file: sharethrough-openid-configuration.json
+    content_type: application/json
+    note: >-
+      Real OpenID Provider Metadata (RFC 8414 / OpenID Connect Discovery 1.0) for the
+      Sharethrough-controlled Auth0 tenant. Discovered by following the publisher-platform
+      login at http://nag.sharethrough.com, which 302s to
+      https://sharethrough-users.auth0.com/u/login. The tenant name and the signing
+      certificate CN are both sharethrough-users.auth0.com.
+  - host: sharethrough-users.auth0.com
+    path: /.well-known/oauth-authorization-server
+    status: 200
+    file: sharethrough-oauth-authorization-server.json
+    content_type: application/json
+    note: RFC 8414 Authorization Server Metadata; byte-identical to the OIDC discovery document.
+  - host: sharethrough-users.auth0.com
+    path: /.well-known/jwks.json
+    status: 200
+    note: >-
+      JSON Web Key Set with two RS256 signing keys (kid MDU5NDA5NjA2NDZGNjI1RDlBRjQyQjY3NzVERDJEMjIxOURBMDgwRA
+      issued 2017-02-03, kid m3yPm0494xstTotLTlZ5y issued 2020-03-13). Not saved verbatim —
+      key material adds no contract value to this profile.
+security_txt: none
+api_catalog: none
+agent_card: none
+summary:
+  paths_probed: 27
+  hits: 3
+  hit_hosts:
+    - sharethrough-users.auth0.com
+  first_party_web_hosts_serving_well_known: 0
+notes:
+  - >-
+    A WellKnown pointer is wired for this repo because at least one probe returned a 200
+    carrying a real machine-readable document. The honest qualifier is that it is served by
+    the company's identity vendor tenant, not by sharethrough.com or by the reporting API
+    host — neither of those serves anything at /.well-known/.
+  - No security.txt is published on any Sharethrough host, so no SecurityTxt pointer is emitted.
+  - No agent card was found at either /.well-known/agent-card.json or /.well-known/agent.json on any host.

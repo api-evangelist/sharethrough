@@ -1,5 +1,15 @@
 name: Sharethrough
-description: Sharethrough is a human-centric programmatic advertising platform and one of the largest independent omnichannel ad exchanges, offering REST APIs for publishers and advertisers to manage native, display, and video ad placements through SSP/DSP integrations, real-time bidding via OpenRTB, programmatic reporting, and sustainability-focused media buying with Scope3 Climate Shield certification.
+description: >-
+  Sharethrough is an omnichannel programmatic advertising exchange (SSP) for native, display,
+  video and CTV inventory, and one of the largest independent ad marketplaces. Publishers
+  monetise through the Prebid.js header-bidding adapter and server-to-server OpenRTB; demand
+  partners buy through the exchange. Two API surfaces exist: a bearer-token Publisher
+  Reporting API at publisher-api.sharethrough.com/v2 whose public reference is now behind a
+  support-site sign-in, and the unauthenticated OpenRTB bid endpoint at
+  btlr.sharethrough.com/universal/v1 used by the Prebid adapter. The company's richest
+  machine-readable artifact is its IAB sellers.json (5,189 sellers). Sharethrough merged with
+  Equativ in 2024 and has operated under the Equativ brand since June 2025; the Sharethrough
+  exchange and its endpoints continue to run.
 accessModel:
   pricing: unknown
   onboarding: unknown
@@ -15,7 +25,7 @@ accessModel:
 image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/sharethrough.png
 url: https://raw.githubusercontent.com/api-evangelist/sharethrough/refs/heads/main/apis.yml
 created: '2026-06-13'
-modified: '2026-06-13'
+modified: '2026-08-12'
 specificationVersion: '0.19'
 tags:
   - Native Advertising
@@ -25,24 +35,44 @@ tags:
   - OpenRTB
   - Ad Exchange
   - Header Bidding
+  - CTV
   - Sustainability
 apis:
   - name: Sharethrough Publisher Reporting API
-    description: REST API enabling publishers to pull programmatic and direct sell reporting data for their native ad placements, including impressions, revenue, and performance metrics, using token-based authentication.
+    description: >-
+      REST-ish reporting API enabling publishers to pull programmatic performance data for
+      their Sharethrough inventory. A single POST /v2/programmatic endpoint takes a query
+      object (startDate, endDate, groupBy, fields, filterBy) and returns CSV by default or
+      JSON when negotiated by the Accept header. Bearer-token authentication. The v1 surface
+      is retired and returns 503; the reference documentation now requires a support-site
+      sign-in.
     image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
     humanURL: https://support.sharethrough.com/hc/en-us/sections/360009157451-Publisher-API-for-Reporting
-    baseURL: https://api.sharethrough.com
+    baseURL: https://publisher-api.sharethrough.com/v2
     tags:
       - Publisher
       - Reporting
       - Native Advertising
     properties:
       - type: Documentation
-        url: https://support.sharethrough.com/hc/en-us/articles/360044449471-Sharethrough-Publisher-API-Documentation
+        url: https://support.sharethrough.com/hc/en-us/sections/360009157451-Publisher-API-for-Reporting
       - type: GitHubRepository
-        url: https://github.com/sharethrough/publisher-api-examples
+        url: https://github.com/strchives/publisher-api-examples
+      - type: Authentication
+        url: authentication/sharethrough-authentication.yml
+      - type: ErrorCatalog
+        url: errors/sharethrough-problem-types.yml
+      - type: Conventions
+        url: conventions/sharethrough-conventions.yml
+      - type: DataModel
+        url: data-model/sharethrough-data-model.yml
   - name: Sharethrough Header Bidding (Prebid) API
-    description: OpenRTB-based bidder adapter integration enabling SSP/DSP connections through the Prebid.js header bidding framework for native, display, and video ad formats with support for placement keys and first-party data targeting.
+    description: >-
+      OpenRTB 2.x bid endpoint at /universal/v1, integrated through the first-party
+      sharethrough bidder adapter in Prebid.js (adapter version 4.3.0, IAB GVL ID 80).
+      Supports banner, native and video/CTV, the price floors module, supply chain objects,
+      SafeFrame, and GDPR/TCF, CCPA/USP and COPPA signalling. Publishers identify placements
+      with a pkey; eqtvNetworkId routes the request to the Equativ exchange.
     image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
     humanURL: https://docs.prebid.org/dev-docs/bidders/sharethrough.html
     baseURL: https://btlr.sharethrough.com
@@ -58,29 +88,66 @@ apis:
         url: https://docs.prebid.org/dev-docs/bidders/sharethrough.html
       - type: GitHubRepository
         url: https://github.com/sharethrough/Prebid.js-inventory-growth
+      - type: SourceCode
+        url: https://github.com/prebid/Prebid.js/blob/master/modules/sharethroughBidAdapter.js
 common:
-  - type: DomainSecurity
-    url: security/sharethrough-domain-security.yml
   - type: Website
     url: https://www.sharethrough.com
   - type: Documentation
     url: https://support.sharethrough.com/hc/en-us
-  - type: GitHubOrg
+  - type: Support
+    url: https://support.sharethrough.com/hc/en-us
+  - type: GitHubOrganization
     url: https://github.com/sharethrough
   - type: LinkedIn
     url: https://www.linkedin.com/company/sharethrough
   - type: Blog
     url: https://www.sharethrough.com/blog
-  - type: Pricing
-    url: https://www.sharethrough.com/publishers
   - type: X
     url: https://x.com/sharethrough
+  - type: TermsOfService
+    url: https://www.sharethrough.com/publisher-platform-terms-of-service
+  - type: PrivacyPolicy
+    url: https://privacy-center.sharethrough.com
+  - type: Contact
+    url: https://www.sharethrough.com/contact
   - type: Plans
     url: plans/sharethrough-plans-pricing.yml
   - type: RateLimits
     url: rate-limits/sharethrough-rate-limits.yml
   - type: FinOps
     url: finops/sharethrough-finops.yml
+  - type: DomainSecurity
+    url: security/sharethrough-domain-security.yml
+  - type: Authentication
+    url: authentication/sharethrough-authentication.yml
+  - type: ErrorCatalog
+    url: errors/sharethrough-problem-types.yml
+  - type: Conventions
+    url: conventions/sharethrough-conventions.yml
+  - type: Lifecycle
+    url: lifecycle/sharethrough-lifecycle.yml
+  - type: Conformance
+    url: conformance/sharethrough-conformance.yml
+  - type: Compliance
+    url: conformance/sharethrough-conformance.yml
+  - type: DataModel
+    url: data-model/sharethrough-data-model.yml
+  - type: Packages
+    url: packages/sharethrough-packages.yml
+  - type: WellKnown
+    url: well-known/sharethrough-well-known.yml
+  - type: LLMsTxt
+    url: llms/sharethrough-llms.txt
+  - type: SellersJSON
+    url: sellers-json/sharethrough-sellers-json.yml
+  - type: JSONLDContext
+    url: json-ld/sharethrough-context.jsonld
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com
+x-enrichment:
+  date: '2026-08-12'
+  status: enriched
+  artifacts_added: 14
+  pass: local-v1

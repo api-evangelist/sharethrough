@@ -1,0 +1,110 @@
+name: Sharethrough Packages and SDKs
+description: >-
+  Registry sweep for first-party Sharethrough client libraries. There are none. Every major
+  registry was queried unauthenticated and returned zero Sharethrough-published packages. The
+  only first-party client code Sharethrough ships is an unpackaged Python example repository
+  and the bidder adapter it maintains inside Prebid.js, which is distributed under Prebid's
+  npm package rather than Sharethrough's own.
+generated: '2026-08-12'
+method: searched
+source: registry search endpoints + github.com/sharethrough + github.com/strchives, 2026-08-12
+official_package_count: 0
+registries_checked:
+  - registry: npm
+    endpoint: 'https://registry.npmjs.org/-/v1/search?text=sharethrough'
+    result: 0 results
+  - registry: PyPI
+    endpoint: https://pypi.org/pypi/sharethrough/json
+    result: 404 (also 404 for sharethrough-api)
+  - registry: RubyGems
+    endpoint: 'https://rubygems.org/api/v1/search.json?query=sharethrough'
+    result: no Sharethrough-published gem
+  - registry: crates.io
+    endpoint: 'https://crates.io/api/v1/crates?q=sharethrough'
+    result: '{"crates":[],"meta":{"total":0}}'
+  - registry: Packagist
+    endpoint: 'https://packagist.org/search.json?q=sharethrough'
+    result: '{"results":[],"total":0}'
+  - registry: Maven Central
+    result: no first-party artifact found
+  - registry: NuGet
+    result: no first-party artifact found
+  - registry: pkg.go.dev
+    result: >-
+      no first-party module. github.com/sharethrough/prebid-server-inv-growth and
+      prebid-server-java-inventory-growth are forks of the Prebid Server projects, not
+      published client libraries.
+packages: []
+unpackaged_first_party_clients:
+  - name: publisher-api-examples
+    kind: example client (not a package)
+    language: Python
+    repository: https://github.com/strchives/publisher-api-examples
+    original_url: https://github.com/sharethrough/publisher-api-examples
+    registry: null
+    version: null
+    published: null
+    last_pushed: '2020-12-24'
+    official: true
+    description: >-
+      Sharethrough's own example requests for the Publisher API — a pipenv project with
+      libs/auth.py (bearer auth), libs/publisher_api.py (POST + CSV/JSON writer) and
+      run_programmatic.py / run_direct_sell.py.
+    currency_note: >-
+      Not published to PyPI, so there is no registry metadata to read; version and published
+      are recorded as null because there is nothing to record, not because they were not
+      checked. Last commit 2020-12-24, and the repository has since been moved from the
+      sharethrough org to strchives ("Sharethrough archives"), which is an explicit
+      archival signal.
+    decay: >-
+      STRONG. setup.py hard-codes PUB_API_URL = 'https://publisher-api.sharethrough.com/v1'.
+      That base now returns a plain-text 503 on every path; the live surface is /v2. The
+      provider's only published client no longer works as shipped.
+  - name: sharethroughBidAdapter
+    kind: upstream module (not a Sharethrough-published package)
+    language: JavaScript
+    repository: https://github.com/prebid/Prebid.js
+    path: modules/sharethroughBidAdapter.js
+    registry: npm
+    distributed_as: prebid.js
+    version: '4.3.0'
+    version_source: 'the VERSION constant declared inside the adapter source'
+    published: null
+    official: true
+    official_note: >-
+      Authored and maintained by Sharethrough, but released on Prebid's cadence inside the
+      prebid.js npm package. It is not a Sharethrough-namespaced package and cannot be
+      installed on its own, so it is not counted toward official_package_count.
+    currency_note: >-
+      published is null because the adapter has no independent release record — its ship date
+      is whatever Prebid.js release carried it. Actively maintained: the module currently
+      imports libraries/equativUtils/equativUtils.js and can route to the Equativ exchange.
+  - name: sharethroughAnalyticsAdapter
+    kind: upstream module (not a Sharethrough-published package)
+    language: JavaScript
+    repository: https://github.com/prebid/Prebid.js
+    path: modules/sharethroughAnalyticsAdapter.js
+    registry: npm
+    distributed_as: prebid.js
+    version: null
+    published: null
+    official: true
+    currency_note: >-
+      Present in the Prebid.js tree (HTTP 200 on the raw file) and documented at
+      docs.prebid.org/dev-docs/analytics/sharethrough.html. Same distribution caveat as the
+      bid adapter; no independent version to read.
+github_org:
+  url: https://github.com/sharethrough
+  public_repos: 14
+  observation: >-
+    The org's active repositories are Prebid forks (Prebid.js, Prebid.js-inventory-growth,
+    prebid-server-inv-growth, prebid-server-java-inventory-growth,
+    prebid.github.io-team-inventory-growth) plus a Swift in-app tester. There is no client
+    SDK repository for either Sharethrough API.
+notes:
+  - >-
+    No SDKs pointer is emitted for this provider. official_package_count is 0 and crediting
+    an SDK count would be a fabrication.
+  - >-
+    A first-party client whose hard-coded base URL is dead is the clearest abandonment
+    evidence in this profile, and it is the provider's own artifact — not an inference.

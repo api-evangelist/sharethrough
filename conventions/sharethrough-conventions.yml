@@ -1,0 +1,146 @@
+name: Sharethrough API Conventions
+description: >-
+  Cross-cutting runtime semantics for the Sharethrough Publisher Reporting API and the
+  header-bidding endpoint: how requests are shaped, how the caller authenticates, how output
+  format is chosen, how versioning works, what the error envelope looks like, and — as
+  importantly — which conventions are absent. Built from live probes plus Sharethrough's own
+  first-party example client, because no OpenAPI and no public reference exist.
+generated: '2026-08-12'
+method: derived
+source: >-
+  live probes of publisher-api.sharethrough.com and btlr.sharethrough.com (2026-08-12);
+  https://github.com/strchives/publisher-api-examples (Sharethrough's own client);
+  https://raw.githubusercontent.com/prebid/Prebid.js/master/modules/sharethroughBidAdapter.js
+surfaces:
+  reporting:
+    base_url: https://publisher-api.sharethrough.com/v2
+    style: 'RPC-over-HTTP — a single POST endpoint that takes a query object, not a resource CRUD API'
+    operations:
+      - 'POST /v2/programmatic — run a programmatic report'
+      - 'GET /v2/health — liveness, 200 with an empty body'
+    transport: HTTPS only
+  bidding:
+    base_url: 'https://btlr.sharethrough.com/universal/v1?supply_id=<supply_id>'
+    style: OpenRTB 2.x server-to-server bid request/response
+    transport: HTTPS only
+authentication:
+  style: OAuth 2.0 bearer token in the Authorization header
+  header: 'Authorization: Bearer <AUTH_TOKEN>'
+  applies_to: reporting
+  bidding: unauthenticated; identified by supply_id + the per-publisher pkey placement key
+  detail: authentication/sharethrough-authentication.yml
+request_shape:
+  method: POST
+  content_type: application/json
+  body:
+    startDate: 'YYYY-MM-DD'
+    endDate: 'YYYY-MM-DD'
+    groupBy: 'array of dimension names'
+    fields: 'array of metric names'
+    filterBy: 'array of {operator, field, value} predicates'
+    debug: 'boolean (optional)'
+  filter_operators_observed:
+    - EQUALS
+  note: >-
+    Date range, grouping, metric selection and filtering all travel in the request body.
+    There are no query-string parameters on the reporting surface.
+content_negotiation:
+  mechanism: Accept request header
+  default: text/csv
+  alternatives:
+    - text/csv
+    - application/json
+  detail: >-
+    Sharethrough's own client sends {'accept': 'text/csv'} for the CSV form and omits the
+    header entirely for JSON. The JSON form returns an object with a results[] array of row
+    objects. This is a genuine convention — output format is negotiated by header rather than
+    by a format=... parameter or a file-extension suffix.
+pagination:
+  supported: false
+  style: none
+  detail: >-
+    No page/cursor/limit/offset parameter appears in Sharethrough's own request bodies and no
+    pagination envelope appears in the JSON response shape. A report returns its full result
+    set in one response, so a wide date range is bounded only by the caller's timeout.
+idempotency:
+  supported: false
+  header: none
+  detail: >-
+    No Idempotency-Key or equivalent header is documented or accepted. In practice the
+    reporting surface is read-only — POST is used as a query verb, so every call is naturally
+    safe to repeat — but there is no idempotency contract, no replay window, and no dedupe
+    key. No Idempotency pointer is emitted for this provider.
+request_tracing:
+  request_id_header: none
+  correlation_id: none
+  detail: >-
+    No X-Request-Id, X-Correlation-Id, X-Amzn-Trace-Id or equivalent is returned on any
+    observed response. A failing report call cannot be quoted to support by identifier.
+versioning:
+  style: URI path prefix
+  current: v2
+  previous: v1
+  detail: >-
+    /v1 and /v2 are separate path prefixes on the same host. v1 is gone — every /v1 path now
+    returns a plain-text 503 rather than a 404, a 410, or a Sunset header. No version header,
+    no date-based pinning, no version negotiation.
+  lifecycle: lifecycle/sharethrough-lifecycle.yml
+error_envelope:
+  media_type: application/json
+  shape: '{"message": string, "error": string?, "statusCode": integer}'
+  rfc9457: false
+  detail: errors/sharethrough-problem-types.yml
+rate_limit_signaling:
+  headers: none
+  status_on_exhaustion: not observed
+  detail: rate-limits/sharethrough-rate-limits.yml
+cors:
+  access_control_allow_origin: '*'
+  access_control_allow_methods: 'GET,HEAD,PUT,PATCH,POST,DELETE'
+  preflight: 'OPTIONS returns 204'
+  note: >-
+    The reporting API allows any origin. Combined with a bearer token in the Authorization
+    header this is workable, but it means the surface is reachable from browser JavaScript on
+    any site if a token leaks into the front end.
+server_headers:
+  x_powered_by: Express
+  note: >-
+    The stack is advertised on every response. Suppressing x-powered-by is standard hardening
+    advice for Express services.
+field_vocabulary:
+  dimensions_observed:
+    - date
+    - supply_name
+    - placement_name
+    - domain
+    - creative_type
+    - device_type
+    - country
+  metrics_observed:
+    - rendered_impressions
+    - impression_requests
+    - pub_earnings
+    - clicks
+    - ctr
+  detail: data-model/sharethrough-data-model.yml
+  note: >-
+    These are the names Sharethrough uses in its own example requests plus one published
+    third-party example. There is no discovery endpoint — GET /v2/fields and /v2/dimensions
+    both 404 — so the full vocabulary is only knowable from the gated documentation.
+absent_conventions:
+  - idempotency keys
+  - pagination
+  - request/correlation identifiers
+  - rate-limit headers
+  - Sunset / Deprecation headers (RFC 8594)
+  - conditional requests (ETag / If-None-Match) on report responses
+  - a machine-readable spec of any kind for either surface
+  - WWW-Authenticate challenge on 401
+notes:
+  - >-
+    The strongest convention Sharethrough actually operates is content negotiation between
+    CSV and JSON on the same endpoint — unusual, and useful to an integrator who wants to
+    drop a report straight into a spreadsheet pipeline.
+  - >-
+    The weakest is versioning: a retired major version answering 503 instead of 410 teaches
+    every well-behaved client library to retry against a version that will never come back.

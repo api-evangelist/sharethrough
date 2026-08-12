@@ -1,34 +1,88 @@
 name: Sharethrough Rate Limits
-description: Sharethrough does not publicly document specific rate limits for its Publisher Reporting API or OpenRTB bidding endpoints. Rate limits are enforced at the platform level and communicated through account management. The following reflects known or inferred constraints based on public documentation and integration guides.
-url: https://support.sharethrough.com/hc/en-us/articles/360044449471-Sharethrough-Publisher-API-Documentation
+description: >-
+  Sharethrough publishes no rate limits for either API surface, and neither surface returns a
+  rate-limit header. This file records that absence with the probes that establish it, rather
+  than asserting numbers nobody published.
+url: https://support.sharethrough.com/hc/en-us/sections/360009157451-Publisher-API-for-Reporting
+generated: '2026-08-12'
+method: searched
+source: >-
+  live probes of https://publisher-api.sharethrough.com/v2/programmatic and
+  https://btlr.sharethrough.com/universal/v1 (2026-08-12); Sharethrough support help centre;
+  https://docs.prebid.org/dev-docs/bidders/sharethrough.html
 created: '2026-06-13'
-modified: '2026-06-13'
+modified: '2026-08-12'
+limit_count: 0
+documented: false
+headers_returned: none
+response_headers_observed:
+  reporting_401:
+    - date
+    - content-type
+    - content-length
+    - x-powered-by
+    - access-control-allow-origin
+    - etag
+  reporting_404:
+    - date
+    - content-type
+    - content-length
+    - x-powered-by
+    - access-control-allow-origin
+    - etag
+  bidding_400:
+    - content-length
+    - strict-transport-security
+  note: >-
+    No RateLimit-Limit / RateLimit-Remaining / RateLimit-Reset, no X-RateLimit-*, and no
+    Retry-After appears on any observed response from either host.
+status_on_exhaustion: unknown
+status_on_exhaustion_note: No 429 was produced or documented.
 rateLimits:
   - name: Publisher Reporting API
-    description: The Publisher API for Reporting is used to pull programmatic and direct sell performance data. No explicit rate limits are publicly documented; typical usage involves scheduled batch reporting pulls rather than high-frequency real-time calls.
-    endpoint: https://api.sharethrough.com
-    authentication: Bearer Token (AUTH_TOKEN)
+    endpoint: https://publisher-api.sharethrough.com/v2/programmatic
+    scope: per-token (assumed; not stated)
+    window: null
+    limit: null
+    burst: null
+    headers: none
+    authentication: 'Bearer token (Authorization: Bearer <AUTH_TOKEN>)'
     outputFormats:
       - CSV
       - JSON
     reportTypes:
-      - Programmatic
-      - Direct Sell
-    limits:
-      note: Not publicly documented. Contact Sharethrough support or account manager for specific rate limit thresholds.
+      - programmatic
+    note: >-
+      No explicit rate limit is published. The reference that would have carried one is gated:
+      the support section returns 401 anonymously and the reference article returns 404. Usage
+      is batch reporting rather than high-frequency polling. The v1 direct-sell report type is
+      not routed under /v2.
   - name: Header Bidding / OpenRTB Bidding Endpoint
-    description: Real-time bidding requests through the Prebid.js adapter are processed with standard RTB timing constraints. Bid responses must be returned within the auction timeout window configured by the publisher.
-    endpoint: https://btlr.sharethrough.com
+    endpoint: 'https://btlr.sharethrough.com/universal/v1?supply_id=<supply_id>'
+    scope: per-bid-request
+    window: per auction
+    limit: null
+    burst: null
+    headers: none
+    effective_constraint: >-
+      The binding constraint is the auction timeout the publisher configures and passes as
+      OpenRTB tmax, not a published request quota.
     ttl:
-      display: 360 seconds
-      native: 360 seconds
-      video: 3600 seconds
-    bidResponseFormat: Net revenue (revenue sharing already deducted)
+      display: 360
+      native: 360
+      video: 3600
+      unit: seconds
+      source: https://docs.prebid.org/dev-docs/bidders/sharethrough.html
+    bidResponseFormat: net revenue (revenue share already deducted)
     safeframesSupported: true
-    limits:
-      note: RTB-standard auction timeouts apply. High-volume exchange traffic is handled at the platform level; specific rate limits are not published.
 notes:
-  - Rate limits for the Publisher Reporting API are not publicly disclosed and must be obtained from Sharethrough directly.
-  - OpenRTB bid endpoint performance follows standard programmatic exchange constraints (millisecond-level bid timeout windows).
-  - For integration-specific rate limits, contact the Sharethrough Integrations team via your account manager.
-  - Documentation reference: https://support.sharethrough.com/hc/en-us/articles/360044449471-Sharethrough-Publisher-API-Documentation
+  - >-
+    limit_count is 0 because Sharethrough documents zero limits — an honest zero, recorded
+    rather than omitted.
+  - >-
+    The absence of rate-limit response headers is the more consequential finding for an agent
+    or client library: there is no runtime signal to back off against, only whatever the API
+    does when it decides it has had enough.
+  - >-
+    For integration-specific thresholds a publisher must ask their Sharethrough/Equativ
+    account manager; there is no public channel for it.

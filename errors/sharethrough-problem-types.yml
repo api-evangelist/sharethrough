@@ -1,0 +1,127 @@
+name: Sharethrough Error Catalog
+description: >-
+  Error envelope and observed status codes for the Sharethrough Publisher Reporting API and
+  the header-bidding endpoint. Sharethrough publishes no error reference, so every entry here
+  was observed on a live unauthenticated request. The reporting API returns the stock
+  Express/Nest JSON envelope; it is not RFC 9457 application/problem+json, carries no error
+  code vocabulary, and gives the caller no machine-actionable discriminator beyond the HTTP
+  status.
+generated: '2026-08-12'
+method: probed
+source: live requests to https://publisher-api.sharethrough.com and https://btlr.sharethrough.com, 2026-08-12
+format: json
+rfc9457: false
+media_type: application/json; charset=utf-8
+envelope:
+  shape: '{"message": string, "error": string (optional), "statusCode": integer}'
+  fields:
+    - name: message
+      type: string
+      always_present: true
+      description: >-
+        Human-readable summary. On routing failures it echoes the method and path
+        ("Cannot POST /v2/direct-sell"); on auth failures it is the bare word "Unauthorized".
+    - name: error
+      type: string
+      always_present: false
+      description: >-
+        Reason phrase for the status. Present on 404 ("Not Found"); absent on the 401.
+    - name: statusCode
+      type: integer
+      always_present: true
+      description: Duplicates the HTTP status code in the body.
+  absent:
+    - type
+    - title
+    - detail
+    - instance
+    - code
+    - request_id
+    - documentation_url
+  note: >-
+    No correlation identifier is returned on any response. There is no X-Request-Id,
+    X-Correlation-Id or trace header, so a failed report request cannot be quoted back to
+    support by ID.
+problem_types:
+  - status: 401
+    id: unauthorized
+    title: Unauthorized
+    observed_body: '{"message":"Unauthorized","statusCode":401}'
+    observed_on: POST https://publisher-api.sharethrough.com/v2/programmatic
+    cause: >-
+      No Authorization header, or a bearer token the API will not accept. Both produce a
+      byte-identical response.
+    www_authenticate: not sent
+    remediation: >-
+      Send Authorization: Bearer <AUTH_TOKEN> with a token issued to your publisher account.
+    retryable: false
+  - status: 404
+    id: route-not-found
+    title: Not Found
+    observed_body: '{"message":"Cannot POST /v2/direct-sell","error":"Not Found","statusCode":404}'
+    observed_on: >-
+      Every /v2/* path other than /v2/programmatic and /v2/health, for both GET and POST
+    cause: The method + path pair is not routed by the reporting service.
+    remediation: >-
+      Only POST /v2/programmatic and GET /v2/health exist on the v2 surface. The
+      /direct-sell report type documented for v1 is not routed under /v2 at any of the
+      spellings tried (direct-sell, direct_sell, directsell).
+    retryable: false
+  - status: 503
+    id: route-unavailable
+    title: Service Unavailable
+    observed_body: 'Service Unavailable (text/plain, 19 bytes)'
+    observed_on: >-
+      /, /v1, /v1/programmatic, /v1/direct-sell and every path outside the /v2/* prefix on
+      publisher-api.sharethrough.com
+    cause: >-
+      The edge has no healthy target for these routes. The v1 API that Sharethrough's own
+      example client targets (PUB_API_URL = https://publisher-api.sharethrough.com/v1) is
+      gone; it fails with a plain-text 503 rather than a 404, a 410 Gone, or a Sunset header.
+    remediation: Use the /v2 surface.
+    retryable: false
+    note: >-
+      A 503 is the wrong signal for a retired version — it tells a client library to back off
+      and retry rather than to stop. See lifecycle/sharethrough-lifecycle.yml.
+  - status: 400
+    id: bid-request-invalid
+    title: Bad Request
+    observed_body: '(empty body, content-length 0)'
+    observed_on: 'POST https://btlr.sharethrough.com/universal/v1?supply_id=WYu2BXv1'
+    cause: The OpenRTB bid request did not validate.
+    remediation: >-
+      Send a well-formed OpenRTB 2.x BidRequest. The endpoint returns no diagnostic body, so
+      failures must be debugged against the OpenRTB specification and the Prebid.js adapter
+      source.
+    retryable: false
+  - status: 204
+    id: bid-no-fill
+    title: No Bid
+    observed: false
+    note: >-
+      Not observed by this pass — a real no-fill requires a valid signed bid request. Listed
+      because sharethroughBidAdapter.js treats a body-less response as no-fill, which is the
+      OpenRTB convention. Recorded as unverified rather than asserted.
+status_codes_observed:
+  - 200
+  - 204
+  - 400
+  - 401
+  - 404
+  - 503
+not_observed:
+  - 403
+  - 429
+  - 500
+rate_limit_errors: >-
+  No 429 was produced and no RateLimit-*/X-RateLimit-*/Retry-After header appears on any
+  observed response. See rate-limits/sharethrough-rate-limits.yml.
+notes:
+  - >-
+    Derived from probes only. Sharethrough publishes no error-code reference: the support
+    article that carried the Publisher API documentation returns 404 anonymously and the
+    section requires a Zendesk sign-in.
+  - >-
+    The envelope is the Nest/Express default (x-powered-by: Express is returned on every
+    response), which means these bodies are framework output rather than a designed API
+    contract.

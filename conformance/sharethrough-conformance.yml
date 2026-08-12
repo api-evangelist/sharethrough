@@ -1,0 +1,209 @@
+name: Sharethrough Standards Conformance
+description: >-
+  Which industry standards Sharethrough actually implements, each with the evidence that
+  proves it. Sharethrough's conformance profile is almost entirely IAB Tech Lab
+  ad-tech standards plus sustainability certifications — it is a registered TCF vendor, it
+  publishes sellers.json and a device-storage disclosure, and it ships a maintained OpenRTB
+  bidder adapter in Prebid.js. What it does NOT implement is any of the general-purpose API
+  standards: no OpenAPI, no RFC 9457 problem details, no RFC 8594 sunset signalling, no
+  RFC 9116 security.txt, no RateLimit header fields.
+generated: '2026-08-12'
+method: searched
+source: >-
+  https://iab.sharethrough.com/sellers.json; https://vendor-list.consensu.org/v3/vendor-list.json
+  (GVL v171, 2026-08-06); https://assets.sharethrough.com/gvl.json;
+  https://docs.prebid.org/dev-docs/bidders/sharethrough.html;
+  prebid/Prebid.js modules/sharethroughBidAdapter.js; https://www.sharethrough.com/;
+  live probes 2026-08-12
+conformance:
+  - id: iab-sellers-json
+    name: IAB Tech Lab sellers.json 1.0
+    conforms: true
+    evidence: >-
+      https://www.sharethrough.com/sellers.json 301s to https://iab.sharethrough.com/sellers.json
+      and returns a valid 1.0 document (815,843 bytes) with contact_email dsps@sharethrough.com,
+      a TAG-ID identifier, and 5,189 seller records carrying seller_id / name / domain /
+      seller_type. Saved verbatim at sellers-json/sharethrough-sellers.json.
+  - id: iab-openrtb
+    name: IAB OpenRTB 2.x
+    conforms: true
+    evidence: >-
+      The Sharethrough bidder adapter in Prebid.js builds a native OpenRTB BidRequest
+      (id/at/cur/tmax/site/device/imp/regs/user/source) and posts it to
+      https://btlr.sharethrough.com/universal/v1. Adapter VERSION 4.3.0. A malformed body
+      returns 400 from the live endpoint.
+  - id: iab-tcf-v2
+    name: IAB Europe Transparency & Consent Framework v2 (TCF 2.2)
+    conforms: true
+    evidence: >-
+      Registered as vendor 80, "Sharethrough, Inc", in the Global Vendor List
+      (vendorListVersion 171, lastUpdated 2026-08-06). Declares purposes 1, 2, 3, 4, 7, 10,
+      special feature 1, features 1, 2, 3, usesCookies true, cookieMaxAgeSeconds 2592000.
+      The Prebid adapter passes regs.ext.gdpr and user.ext.consent through to the exchange.
+  - id: iab-device-storage-disclosure
+    name: IAB TCF Device Storage & Operational Disclosure
+    conforms: true
+    evidence: >-
+      deviceStorageDisclosureUrl https://assets.sharethrough.com/gvl.json returns 200 with a
+      valid disclosure declaring the stx_user_id cookie (30-day max age, purposes 1/2/7,
+      *.sharethrough.com) and four operational domains — match.sharethrough.com (user
+      matching), btlr.sharethrough.com (ad serving), native.sharethrough.com and
+      *.rendering.sharethrough.com (display rendering). Saved verbatim at
+      conformance/sharethrough-device-storage-disclosure.json.
+  - id: iab-ccpa-usp
+    name: IAB CCPA / US Privacy (USP) string
+    conforms: true
+    evidence: >-
+      docs.prebid.org lists CCPA support as "yes" for the sharethrough adapter; the adapter
+      forwards regs.ext.us_privacy.
+  - id: iab-gpp
+    name: IAB Global Privacy Platform (GPP)
+    conforms: partial
+    evidence: >-
+      docs.prebid.org records GPP support as "some (check with bidder)" rather than a clean
+      yes. Recorded as partial rather than asserted.
+  - id: coppa
+    name: COPPA signalling
+    conforms: true
+    evidence: docs.prebid.org lists COPPA support as "yes" for the sharethrough adapter.
+  - id: prebid-bidder-adapter
+    name: Prebid.js bidder adapter specification
+    conforms: true
+    evidence: >-
+      modules/sharethroughBidAdapter.js implements the full BidderSpec contract (code,
+      supportedMediaTypes [video, banner, native], gvlid 80, isBidRequestValid, buildRequests,
+      interpretBids, getUserSyncs) and is maintained in the upstream Prebid.js repository.
+      Sharethrough also maintains its own Prebid.js and prebid-server forks under
+      github.com/sharethrough.
+  - id: iab-schain
+    name: IAB supply chain object (schain)
+    conforms: true
+    evidence: docs.prebid.org lists Supply Chain Support as "yes" for the sharethrough adapter.
+  - id: prebid-floors
+    name: Prebid Price Floors module
+    conforms: true
+    evidence: docs.prebid.org lists Floors Module Support as "yes".
+  - id: safeframe
+    name: IAB SafeFrame
+    conforms: true
+    evidence: docs.prebid.org records Safeframes as supported for the sharethrough adapter.
+  - id: tag-registration
+    name: Trustworthy Accountability Group (TAG) registration
+    conforms: true
+    evidence: >-
+      sellers.json declares identifiers[0] = {name TAG-ID, value d53b998a7bd4ecd2}. This
+      proves TAG registration; it is not by itself a claim to a specific TAG certification
+      programme (Certified Against Fraud / Brand Safety / Malware), none of which
+      Sharethrough states publicly.
+  - id: scope3-climate-shield
+    name: Scope3 Climate Shield certification
+    conforms: true
+    evidence: >-
+      "Scope3's Climate Shield Certified" is stated on the sharethrough.com homepage
+      alongside "Ad Net Zero Active Member" and "SBTi Approved (Net-Zero Emissions by 2030)".
+  - id: ad-net-zero
+    name: Ad Net Zero membership
+    conforms: true
+    evidence: Stated on the sharethrough.com homepage.
+  - id: sbti
+    name: Science Based Targets initiative (SBTi) approved net-zero target
+    conforms: true
+    evidence: '"SBTi Approved (Net-Zero Emissions by 2030)" stated on the sharethrough.com homepage.'
+  - id: gdpr
+    name: GDPR — data processing addendum published
+    conforms: true
+    evidence: >-
+      https://www.sharethrough.com/data-processing-addendum returns 200; a full privacy centre
+      is published at https://privacy-center.sharethrough.com with an Advertising Platform
+      Privacy Notice, Website Privacy Notice, Consumer Privacy Notice, a User Rights page and
+      a Do Not Sell My Personal Information flow.
+  - id: oauth2
+    name: OAuth 2.0
+    conforms: partial
+    evidence: >-
+      The Publisher Reporting API accepts a bearer token and the company runs an Auth0 tenant
+      whose RFC 8414 / OIDC discovery documents are public
+      (https://sharethrough-users.auth0.com/.well-known/openid-configuration). But the token
+      flow for API access is not documented publicly, no scopes are defined for the API, and
+      the tenant still advertises the implicit and resource-owner-password grants that
+      OAuth 2.1 removes.
+  - id: oidc
+    name: OpenID Connect Discovery 1.0 / RFC 8414
+    conforms: true
+    evidence: >-
+      https://sharethrough-users.auth0.com/.well-known/openid-configuration and
+      /.well-known/oauth-authorization-server both return 200 with valid metadata (issuer,
+      authorization_endpoint, token_endpoint, jwks_uri, PKCE S256). Vendor-hosted on the
+      company's own Auth0 tenant. Saved at well-known/.
+  - id: openapi
+    name: OpenAPI
+    conforms: false
+    evidence: >-
+      No OpenAPI or Swagger document exists at any probed location on api.sharethrough.com
+      (NXDOMAIN), publisher-api.sharethrough.com (/openapi.json, /swagger.json, /docs,
+      /api-docs, /v2/openapi.json, /v2/swagger.json, /v2/docs, /v2/api-docs all 404 or 503),
+      btlr.sharethrough.com, www.sharethrough.com or support.sharethrough.com.
+  - id: asyncapi
+    name: AsyncAPI
+    conforms: false
+    evidence: No event, streaming or webhook surface is published. Not applicable to this provider.
+  - id: rfc9457
+    name: RFC 9457 Problem Details for HTTP APIs
+    conforms: false
+    evidence: >-
+      Errors are the Express/Nest default envelope {"message","error","statusCode"} served as
+      application/json, not application/problem+json. See errors/sharethrough-problem-types.yml.
+  - id: rfc8594
+    name: RFC 8594 Sunset HTTP header
+    conforms: false
+    evidence: >-
+      The retired /v1 surface returns a plain-text 503 with no Sunset or Deprecation header
+      and no Link rel="sunset".
+  - id: rfc9116
+    name: RFC 9116 security.txt
+    conforms: false
+    evidence: >-
+      /.well-known/security.txt returns 404 on www.sharethrough.com, support.sharethrough.com
+      and btlr.sharethrough.com, 503 on publisher-api.sharethrough.com, and 403 on
+      iab.sharethrough.com.
+  - id: ratelimit-header-fields
+    name: IETF RateLimit header fields
+    conforms: false
+    evidence: >-
+      No RateLimit-*, X-RateLimit-* or Retry-After header appears on any observed response
+      from either surface.
+  - id: pagination
+    name: Documented pagination
+    conforms: false
+    evidence: >-
+      No page/cursor/limit/offset parameter appears in Sharethrough's own example request
+      bodies and no pagination envelope appears in the response shape.
+  - id: idempotency
+    name: Idempotency keys
+    conforms: false
+    evidence: No Idempotency-Key header or equivalent is documented or accepted.
+  - id: a2a
+    name: A2A Agent Card
+    conforms: false
+    evidence: >-
+      /.well-known/agent-card.json and /.well-known/agent.json miss on every Sharethrough host
+      probed.
+  - id: mcp
+    name: Model Context Protocol
+    conforms: false
+    evidence: No hosted or remote MCP server is published or discoverable.
+summary:
+  conformant: 17
+  partial: 2
+  non_conformant: 9
+  shape: >-
+    Strong IAB ad-tech and sustainability conformance; effectively zero general-purpose API
+    or agent-readiness standards conformance.
+notes:
+  - >-
+    Sharethrough's machine-readable surface is real but it is all supply-chain metadata —
+    sellers.json, the GVL registration and the device-storage disclosure. None of it
+    describes the API a developer would call.
+  - >-
+    No security certification (SOC 2, ISO 27001, PCI, HIPAA, FedRAMP) is claimed anywhere on
+    the public site, and no trust centre exists, so none is recorded.

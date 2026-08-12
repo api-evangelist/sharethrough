@@ -1,39 +1,87 @@
 name: Sharethrough Plans and Pricing
-description: Sharethrough uses a quotation-based pricing model with no publicly listed fixed plans. As an omnichannel SSP and programmatic exchange, costs are determined by ad spend, revenue share, and negotiated contract terms tailored to publisher and advertiser needs.
+description: >-
+  Sharethrough publishes no priced plans. As an omnichannel SSP it transacts on negotiated
+  revenue share with publishers and on CPM/revenue share with demand partners, and both are
+  set by contract with an account manager. The two entries below describe the commercial
+  relationships the site markets, not published tiers — there is no rate card, no self-serve
+  signup, and no price anywhere on the public site.
 url: https://www.sharethrough.com/publishers
+generated: '2026-08-12'
+method: searched
+source: >-
+  https://www.sharethrough.com/publishers (200), https://www.sharethrough.com/advertisers (200),
+  https://www.sharethrough.com/contact (200), the 627-URL sitemap at
+  https://www.sharethrough.com/sitemap.xml (no pricing page), and
+  https://www.sharethrough.com/publisher-platform-terms-of-service (200)
 created: '2026-06-13'
-modified: '2026-06-13'
+modified: '2026-08-12'
+plan_count: 0
+pricing_model: quote-only
+self_serve: false
+free_tier: false
+trial: false
+public_price_points: 0
 plans:
   - name: Publisher SSP (Supply-Side Platform)
-    description: Access to the Sharethrough omnichannel exchange for publishers monetizing native, display, and video inventory via programmatic real-time bidding and header bidding integrations. Pricing is revenue-share based negotiated with account managers.
+    kind: commercial relationship, not a published plan
+    description: >-
+      Access to the Sharethrough omnichannel exchange for publishers monetising native,
+      display, video and CTV inventory through programmatic real-time bidding and header
+      bidding. Includes Publisher Reporting API access.
     url: https://www.sharethrough.com/publishers
-    pricingModel: Revenue Share
-    pricing: Contact for pricing
+    pricingModel: revenue share
+    price: null
+    currency: null
+    billing_period: null
+    included_quota: null
+    overage: null
+    limits: null
+    pricing: contact for pricing
     features:
-      - Native, display, and video ad formats
-      - Header bidding via Prebid.js integration
-      - OpenRTB 2.3+ compliant bidding
+      - Native, display, video and CTV formats
+      - Header bidding via the Prebid.js sharethrough adapter
+      - OpenRTB 2.x bidding
       - Ad quality and brand safety controls
       - Publisher Reporting API access
       - Sustainability metrics (Scope3 Climate Shield)
-      - DFP/GAM automation for direct sell campaigns
       - Real-time reporting and analytics
-  - name: Advertiser/DSP Integration
-    description: Access for demand-side platforms and advertisers to buy native, display, and video inventory across the Sharethrough exchange. Requires integration setup and approval by the Sharethrough Integrations team.
-    url: https://www.sharethrough.com
-    pricingModel: CPM / Revenue Share
-    pricing: Contact for pricing
+  - name: Advertiser / DSP Integration
+    kind: commercial relationship, not a published plan
+    description: >-
+      Access for demand-side platforms and advertisers to buy Sharethrough inventory. Requires
+      integration setup and approval by the Sharethrough Integrations team.
+    url: https://www.sharethrough.com/advertisers
+    pricingModel: CPM / revenue share
+    price: null
+    currency: null
+    billing_period: null
+    included_quota: null
+    overage: null
+    limits: null
+    pricing: contact for pricing
     features:
-      - OpenRTB native ad buying
-      - SSP/DSP integration via IAB OpenRTB 2.3+
+      - OpenRTB native, display, video and CTV buying
+      - SSP/DSP integration via IAB OpenRTB
       - Placement key (pkey) based targeting
-      - First-party data via ortb2 standard
-      - Category and domain blocking (bcat/badv)
+      - First-party data via the ortb2 standard
+      - Category and advertiser domain blocking (ortb2.bcat / ortb2.badv)
       - Equativ exchange routing (eqtvNetworkId)
-      - Attention metrics and performance optimization
       - Carbon emissions reporting
+terms:
+  publisher_platform: https://www.sharethrough.com/publisher-platform-terms-of-service
+  managed_services: https://www.sharethrough.com/managed-services-terms-of-service
+  data_processing_addendum: https://www.sharethrough.com/data-processing-addendum
 notes:
-  - Sharethrough does not publish a public pricing page with fixed rates.
-  - Publishers and advertisers must contact Sharethrough or their account manager for pricing agreements.
-  - The platform operates on a revenue-share model typical of programmatic SSP/DSP exchanges.
-  - Integration with the Prebid.js bidder adapter requires explicit approval from the Sharethrough Integrations team.
+  - >-
+    plan_count is 0 by design: there are no published tiers to count. Recording the file with
+    an explicit zero is the honest form, rather than omitting it or presenting the two
+    relationship descriptions above as priced plans.
+  - >-
+    No pricing page exists anywhere in the 627-URL sitemap. The apis.yml Pricing pointer that a
+    previous round wired to https://www.sharethrough.com/publishers was removed in this pass:
+    that URL is a marketing landing page with a contact form, not a pricing page, and the
+    pointer asserted a page the provider does not publish.
+  - >-
+    Prebid.js adapter access additionally requires explicit approval from the Sharethrough
+    Integrations team, so even the free, open-source integration path is gated on a
+    conversation.
