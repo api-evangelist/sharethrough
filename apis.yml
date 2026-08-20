@@ -50,6 +50,10 @@ apis:
     humanURL: https://support.sharethrough.com/hc/en-us/sections/360009157451-Publisher-API-for-Reporting
     baseURL: https://publisher-api.sharethrough.com/v2
     tags:
+      - Publishers
+      - Reporting
+      - Native Advertising
+    tags_raw:
       - Publisher
       - Reporting
       - Native Advertising
