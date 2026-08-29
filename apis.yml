@@ -10,6 +10,18 @@ description: >-
   machine-readable artifact is its IAB sellers.json (5,189 sellers). Sharethrough merged with
   Equativ in 2024 and has operated under the Equativ brand since June 2025; the Sharethrough
   exchange and its endpoints continue to run.
+deliveryModel:
+  model: unknown
+  open_source: unknown
+  commercial: true
+  callable_host: false
+  label: Delivery model not determined — needs a product licence on record
+  confidence: low
+  source:
+  - pricing
+  - repository-unlicensed
+  generated: '2026-08-28'
+  method: derived
 accessModel:
   pricing: unknown
   onboarding: unknown
