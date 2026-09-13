@@ -42,6 +42,16 @@ specificationVersion: '0.23'
 tags:
   - Native Advertising
   - Programmatic Advertising
+  - Supply Side Platform
+  - DSP
+  - OpenRTB
+  - Ad Exchange
+  - Header Bidding
+  - CTV
+  - Sustainability
+tags_raw:
+  - Native Advertising
+  - Programmatic Advertising
   - SSP
   - DSP
   - OpenRTB
