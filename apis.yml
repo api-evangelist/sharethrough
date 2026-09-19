@@ -108,6 +108,13 @@ apis:
       - Prebid
       - Native
       - Video
+      - Displays
+    tags_raw:
+      - Header Bidding
+      - OpenRTB
+      - Prebid
+      - Native
+      - Video
       - Display
     properties:
       - type: Documentation
