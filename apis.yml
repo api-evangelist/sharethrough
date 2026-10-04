@@ -11,16 +11,21 @@ description: >-
   Equativ in 2024 and has operated under the Equativ brand since June 2025; the Sharethrough
   exchange and its endpoints continue to run.
 deliveryModel:
-  model: unknown
+  model: saas
+  license_evidence:
+    not_product:
+    - prebid/prebid.js
+    - sharethrough/prebid.js-inventory-growth
+    - strchives/publisher-api-examples
   open_source: unknown
   commercial: true
   callable_host: false
-  label: Delivery model not determined — needs a product licence on record
+  label: Hosted service · you call their endpoint
   confidence: low
   source:
   - pricing
-  - repository-unlicensed
-  generated: '2026-08-28'
+  - repository-not-product
+  generated: '2026-09-25'
   method: derived
 accessModel:
   pricing: unknown
